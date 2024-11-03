@@ -2,7 +2,7 @@ import threading
 import socket
 import logging
 from scapy.all import *
-import DHCP
+import DHCP, WEBRequest
 
 # Setting up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -14,7 +14,7 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 protocol_handler = {
-                    # FTP
+    80: WEBRequest,                 # FTP
     67: DHCP,                 # DHCP
                   # POP3S
     # Add more protocols and their corresponding handlers here

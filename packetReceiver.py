@@ -1,5 +1,5 @@
 import firewall
-import analyzer
+import analayzer
 import socket
 from scapy.all import *
 import sqlite3
