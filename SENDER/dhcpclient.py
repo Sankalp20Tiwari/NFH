@@ -49,7 +49,7 @@ def main():
         sock.sendto(discover_packet, ('127.0.0.1', 67))  # Replace '<DHCP_SERVER_IP>' with the actual IP address of the DHCP server
 
     # Wait for DHCP Offer or Acknowledgement
-    while True:
+    
         data, addr = sock.recvfrom(1024)
         if data[0] == DHCP_OFFER:
             print("Received DHCP Offer from server")
@@ -60,3 +60,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
